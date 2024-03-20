@@ -51,33 +51,11 @@ def get_oci_compute_info():
 oci_facts = get_oci_compute_info()
 # # print the freeform_tags
 for instance in oci_facts:
-    dynamic_dicts_name = f"{instance.display_name}.oci.fiu.edu"
-    dynamic_lists_name = f"{instance.display_name}.oci.fiu.edu"
+    dynamic_dicts_name = f"{instance.display_name}.somedomain.com"
+    dynamic_lists_name = f"{instance.display_name}.somedomain.com"
     instance_has_keys = instance.freeform_tags
     if instance_has_keys:
         dynamic_dicts[dynamic_dicts_name] = instance.freeform_tags
     else:
         dynamic_lists.append(instance.display_name)
 
-# ########## TEAMS Noticications #######################################
-# ## This section is for sending teams notifications ####
-# dynamic_dicts_to_string = str(dynamic_dicts)
-# dynamic_list_to_strings = ','.join(str(compute) for compute in dynamic_lists)
-# sep_line = '*' * 30
-# text_to_card = """
-#      The following hosts have freeform tags:
-#      {}
-#      {}
-#      The following hosts have no freeform tags:
-#      {}
-#      """.format(dynamic_dicts_to_string, sep_line, dynamic_list_to_strings)
-# ######################################################################
-# def teams_notifications(message):
-#     encoded_teams_url = b'aHR0cHM6Ly9maXVkaXQud2ViaG9vay5vZmZpY2UuY29tL3dlYmhvb2tiMi9kODY2Y2M0YS1lOTFiLTRhOWItYTNkZi1jYmNlYzY3NWNlMGFAYWM3OWU1YTgtZTBlNC00MzRiLWEyOTItMmM4OWI1YzI4MzY2L0luY29taW5nV2ViaG9vay    9jOWU3MDJiZjZlMDc0OTFlOWNjMjRkMGRjM2UxYzhkYS81ZTliZDUyOS02YjYxLTQzYTItYmZkMy05MzJlMzRlNTQ2M2E='
-#     teams_url = (base64.b64decode(encoded_teams_url)).decode('ascii')
-#     card = pymsteams.connectorcard(teams_url)
-#     card.text(message)
-#     # card.printme()
-#     card.send()
-
-# notify = teams_notifications(text_to_card)
