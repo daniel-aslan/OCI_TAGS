@@ -33,7 +33,7 @@ connection = mysql.connector.connect(
 #     print(row)
 # print("1st cursor")
 ##############################################
-data_to_insert = (compute_name_id, 'FIU-AccountName', 'FIUOCITEST')
+data_to_insert = (compute_name_id, tag_name, tag_value)
 
 dynamic_dicts = {}
 dynamic_lists = []
