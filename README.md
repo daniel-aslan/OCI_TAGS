@@ -75,7 +75,7 @@ fn use context us-phoenix-1
 
 Update the context with the compartment ocid where the app lives
 ```bash
-fn up context oracle.compartment-id ocid1.compartment.oc1..aaaaaaaavotqadc73fftvx75ilmevwkpoot7qs7l3q3dzb6gumb2227oerda
+fn up context oracle.compartment-id ocid1.compartment.oc1..XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 Add the provider that establishes authetication.  This will use the OCI config file. Please set it up if you do not have it set
