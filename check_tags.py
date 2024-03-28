@@ -1,61 +1,26 @@
 #! /usr/bin/env ptyhon3
-# Use this as a template for the script
-# https://github.com/oracle/oci-python-sdk/blob/master/examples/tag_resources_in_tenancy/tag_resources_in_tenancy.py
 
-from pprint import pprint as pp
-import base64, pymsteams, oci
-# from pprint import pprint as pp
+from oci_facts import get_compute_tags_info as gt
+from oci_facts import get_oci_compute_info as go
+from teams_notification import teams_notifications as tn
 
-### Global Variables
-# Auth from instance principal
-# signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
-# config = {'region': signer.region, 'tenancy': signer.tenancy_id}
-# Auth from config file
-file = ["~/.oci/config", "DEFAULT"]
-config = oci.config.from_file(file_location=file[0], profile_name=file[1])
-dynamic_dicts = {}
-dynamic_lists = []
+def check_tags():
+    tag_dictionary, notag_list = gt(go())
 
-# EST. connecticity to OCI
-identity = oci.identity.IdentityClient(config)
-core_client = oci.core.ComputeClient(config)
+    # ## This section is for sending teams notifications ####
+    dynamic_dicts_to_string = str(tag_dictionary)
+    dynamic_list_to_strings = ','.join(str(compute) for compute in notag_list)
+    text_to_card = """
+        The following hosts have freeform tags:
+        {}
+        The following hosts have no freeform tags:
+        {}
+        """.format(dynamic_dicts_to_string, dynamic_list_to_strings)
 
-def get_oci_compute_info():
-    all_instance_response = []
-    # Get a list of compartments in the tenancy
-    list_compartments_response = identity.list_compartments(
-        config["tenancy"],
-        compartment_id_in_subtree=True,
-        access_level="ANY"
-        )
-    # Create an empty list to store the compartments
-    compartments_list = []
-    # Put compartment OCID's in empty list
-    for compartment in list_compartments_response.data:
-        compartments_list.append(compartment.id)
-    # Iterate over the compartments to get the list of instances and there tags
-    # comp_id = 
-    for comp_id in compartments_list:
-        list_instances_response = core_client.list_instances(
-            compartment_id=comp_id,
-            sort_by="TIMECREATED",
-            sort_order="DESC",
-            lifecycle_state="RUNNING"
-            )
-        
-        if list_instances_response.data:
-            for i in list_instances_response.data:
-                all_instance_response.append(i)
-    return (all_instance_response)
+    tn(text_to_card)
 
-oci_facts = get_oci_compute_info()
-# # print the freeform_tags
-for instance in oci_facts:
-    dynamic_dicts_name = f"{instance.display_name}.somedomain.com"
-    dynamic_lists_name = f"{instance.display_name}.somedomain.com"
-    instance_has_keys = instance.freeform_tags
-    if instance_has_keys:
-        dynamic_dicts[dynamic_dicts_name] = instance.freeform_tags
-    else:
-        dynamic_lists.append(instance.display_name)
+def main():
+    check_tags()
 
+if __name__ == '__main__':
+    main()

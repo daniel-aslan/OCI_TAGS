@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 import oci
+from pprint import pprint as pp
 
 ### Global Variables
 # Auth from instance principal
@@ -43,3 +44,24 @@ def get_oci_compute_info():
             for i in list_instances_response.data:
                 all_instance_response.append(i)
     return (all_instance_response)
+
+def get_compute_tags_info(oci_list: list):
+    dynamic_lists = []
+    dynamic_dicts = {}
+    for instance in oci_list:
+         # Add the somedomain.local to the displayname from oci sdk
+         fqdn_name = f"{instance.display_name}.somedomain.local"
+         # IF there are tags add it to the dynamic dictionary for adding the tags to the db later
+         if instance.freeform_tags:
+             dynamic_dicts[fqdn_name] = instance.freeform_tags
+         # Else make a list so we know what instances still need tags
+         else:
+             dynamic_lists.append(fqdn_name)
+    return dynamic_dicts, dynamic_lists
+
+def main():
+    pp(get_oci_compute_info())
+
+
+if __name__ == "__main__":
+    main()
